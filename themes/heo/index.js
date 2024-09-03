@@ -10,6 +10,7 @@ import Comment from '@/components/Comment'
 import { AdSlot } from '@/components/GoogleAdsense'
 import { HashTag } from '@/components/HeroIcons'
 import LazyImage from '@/components/LazyImage'
+import LoadingCover from '@/components/LoadingCover'
 import replaceSearchResult from '@/components/Mark'
 import NotionPage from '@/components/NotionPage'
 import ShareBar from '@/components/ShareBar'
@@ -82,6 +83,7 @@ const LayoutBase = props => {
     false,
     CONFIG
   )
+  const HEO_LOADING_COVER = siteConfig('HEO_LOADING_COVER', true, CONFIG)
 
   // 加载wow动画
   useEffect(() => {
@@ -121,6 +123,8 @@ const LayoutBase = props => {
 
       {/* 页脚 */}
       <Footer title={siteConfig('TITLE')} />
+
+      {HEO_LOADING_COVER && <LoadingCover />}
     </div>
   )
 }
@@ -291,17 +295,18 @@ const LayoutSlug = props => {
         {!lock && (
           <div id='article-wrapper' className='mx-auto md:w-full md:px-5'>
             {/* 文章主体 */}
-            <article
-              itemScope
-              itemType='https://schema.org/Movie'
-              data-wow-delay='.2s'
-              className='wow fadeInUp'>
+            <article itemScope itemType='https://schema.org/Movie'>
               {/* Notion文章主体 */}
-              <section className='px-5 py-5 justify-center mx-auto'>
+              <section
+                className='wow fadeInUp p-5 justify-center mx-auto'
+                data-wow-delay='.2s'>
                 <WWAds orientation='horizontal' className='w-full' />
                 {post && <NotionPage post={post} />}
                 <WWAds orientation='horizontal' className='w-full' />
               </section>
+
+              {/* 上一篇\下一篇文章 */}
+              <PostAdjacent {...props} />
 
               {/* 分享 */}
               <ShareBar post={post} />
@@ -314,9 +319,6 @@ const LayoutSlug = props => {
                 </div>
               )}
             </article>
-
-            {/* 上一篇\下一篇文章 */}
-            <PostAdjacent {...props} />
 
             {/* 评论区 */}
             {fullWidth ? null : (
